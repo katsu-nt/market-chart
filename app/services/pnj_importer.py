@@ -35,7 +35,7 @@ def normalize_gold_type(name: str) -> str:
 
 
 def normalize_unit():
-    return "tael", "1 Lượng"
+    return "tael", "1000VND/Lượng"
 
 
 def normalize_location(text: str):
