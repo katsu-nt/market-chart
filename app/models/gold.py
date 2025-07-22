@@ -7,6 +7,8 @@ from sqlalchemy import (
     DECIMAL,
     ForeignKey,
     UniqueConstraint,
+    Index,
+    
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -56,6 +58,15 @@ class GoldPrice(Base):
 
     gold_type = relationship("GoldType", back_populates="prices")
     unit = relationship("Unit", back_populates="prices")
+    
+    __table_args__ = (
+
+        # 👉 Index để lọc theo loại vàng và thời gian
+        Index("ix_gold_prices_type_time", "gold_type_id", "timestamp"),
+
+        # 👉 Index theo khoảng thời gian (dùng nhiều trong dashboard)
+        Index("ix_gold_prices_timestamp", "timestamp"),
+    )
 
     def as_dict(self):
         tz = timezone("Asia/Ho_Chi_Minh")

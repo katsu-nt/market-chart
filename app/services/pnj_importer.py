@@ -102,7 +102,7 @@ async def import_pnj_range(start_date: datetime, end_date: datetime):
                 insert_count += 1
 
             db.commit()
-            print(f"✅ Inserted {insert_count} new records for {current.strftime('%Y-%m-%d')}")
+            print(f"✅ Inserted {insert_count} new records for {current.strftime('%Y-%m-%d')} domestic")
             current += timedelta(days=1)
 
     except Exception as e:

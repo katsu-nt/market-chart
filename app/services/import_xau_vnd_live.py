@@ -41,8 +41,6 @@ async def import_xau_vnd_live():
         # 🧹 Xoá tất cả các bản ghi xau_vnd cũ trong hôm nay
         now = datetime.now(pytz.timezone("Asia/Ho_Chi_Minh"))
         deleted = db.query(DailyGoldPrice).filter(
-            DailyGoldPrice.timestamp >= now.replace(hour=0, minute=0, second=0, microsecond=0),
-            DailyGoldPrice.timestamp < now.replace(hour=23, minute=59, second=59),
             DailyGoldPrice.gold_type_id == gold_type.id,
             DailyGoldPrice.unit_id == unit.id,
             DailyGoldPrice.location == "global",

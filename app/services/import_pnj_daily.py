@@ -57,7 +57,7 @@ async def import_pnj_daily():
                 {"description": rec["gold_type"]},
             )
             db.add(DailyGoldPrice(
-                timestamp=now,
+                timestamp=now.replace(minute=0, second=0, microsecond=0),
                 buy_price=rec["buy_price"],
                 sell_price=rec["sell_price"],
                 location=rec["location"],
@@ -66,7 +66,7 @@ async def import_pnj_daily():
             ))
 
         db.commit()
-        print(f"✅ Inserted {len(data)} daily records")
+        print(f"✅ Inserted {len(data)} daily records domestic")
     except Exception as e:
         db.rollback()
         print("❌ Error:", e)
