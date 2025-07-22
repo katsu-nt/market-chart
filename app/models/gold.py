@@ -11,7 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
-
+from pytz import timezone
 
 class GoldType(Base):
     __tablename__ = "gold_types"
@@ -58,14 +58,19 @@ class GoldPrice(Base):
     unit = relationship("Unit", back_populates="prices")
 
     def as_dict(self):
+        tz = timezone("Asia/Ho_Chi_Minh")
+        localized_ts = self.timestamp.astimezone(tz)  # chuyển sang giờ Việt Nam
         return {
-            "timestamp": self.timestamp.isoformat(),
+            "timestamp": localized_ts.isoformat(),
             "buy_price": float(self.buy_price),
             "sell_price": float(self.sell_price),
             "location": self.location,
             "gold_type": self.gold_type.name if self.gold_type else None,
+            "gold_type_description": self.gold_type.description if self.gold_type else None,
             "unit": self.unit.name if self.unit else None,
+            "unit_description": self.unit.description if self.unit else None,
         }
+
 
 
 class DailyGoldPrice(Base):
@@ -84,11 +89,15 @@ class DailyGoldPrice(Base):
     unit = relationship("Unit", back_populates="daily_prices")
 
     def as_dict(self):
+        tz = timezone("Asia/Ho_Chi_Minh")
+        localized_ts = self.timestamp.astimezone(tz)  # chuyển sang giờ Việt Nam
         return {
-            "timestamp": self.timestamp.isoformat(),
+            "timestamp": localized_ts.isoformat(),
             "buy_price": float(self.buy_price),
             "sell_price": float(self.sell_price),
             "location": self.location,
             "gold_type": self.gold_type.name if self.gold_type else None,
+            "gold_type_description": self.gold_type.description if self.gold_type else None,
             "unit": self.unit.name if self.unit else None,
+            "unit_description": self.unit.description if self.unit else None,
         }

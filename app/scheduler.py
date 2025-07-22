@@ -31,7 +31,7 @@ def start():
     scheduler.start()
 
 
-## Test script
+# # Test script
 # from apscheduler.schedulers.background import BackgroundScheduler
 # from apscheduler.triggers.cron import CronTrigger
 # from pytz import timezone
