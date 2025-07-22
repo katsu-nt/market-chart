@@ -45,23 +45,20 @@ class Unit(Base):
 class GoldPrice(Base):
     __tablename__ = "gold_prices"
 
-    id = Column(Integer, primary_key=True, index=True)
-    timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
-    gold_type_id = Column(Integer, ForeignKey("gold_types.id"), nullable=False)
-    unit_id = Column(Integer, ForeignKey("units.id"), nullable=False)
+    timestamp = Column(TIMESTAMP(timezone=True), primary_key=True)
+    unit_id = Column(Integer, ForeignKey("units.id"), primary_key=True)
+    location = Column(String(100), primary_key=True)
+    gold_type_id = Column(Integer, ForeignKey("gold_types.id"), primary_key=True)
+
     buy_price = Column(DECIMAL(15, 2), nullable=False)
     sell_price = Column(DECIMAL(15, 2), nullable=False)
-    location = Column(String(100))
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    __table_args__ = (
-        UniqueConstraint(
-            "timestamp", "unit_id", "location", "gold_type_id", name="unique_gold_entry"
-        ),
-    )
+    gold_type = relationship("GoldType", back_populates="prices")
+    unit = relationship("Unit", back_populates="prices")
+
     def as_dict(self):
         return {
-            "id": self.id,
             "timestamp": self.timestamp.isoformat(),
             "buy_price": float(self.buy_price),
             "sell_price": float(self.sell_price),
@@ -69,32 +66,25 @@ class GoldPrice(Base):
             "gold_type": self.gold_type.name if self.gold_type else None,
             "unit": self.unit.name if self.unit else None,
         }
-
-
-    gold_type = relationship("GoldType", back_populates="prices")
-    unit = relationship("Unit", back_populates="prices")
 
 
 class DailyGoldPrice(Base):
     __tablename__ = "daily_gold_prices"
 
-    id = Column(Integer, primary_key=True, index=True)
-    timestamp = Column(TIMESTAMP(timezone=True), nullable=False)
-    gold_type_id = Column(Integer, ForeignKey("gold_types.id"), nullable=False)
-    unit_id = Column(Integer, ForeignKey("units.id"), nullable=False)
+    timestamp = Column(TIMESTAMP(timezone=True), primary_key=True)
+    unit_id = Column(Integer, ForeignKey("units.id"), primary_key=True)
+    location = Column(String(100), primary_key=True)
+    gold_type_id = Column(Integer, ForeignKey("gold_types.id"), primary_key=True)
+
     buy_price = Column(DECIMAL(15, 2), nullable=False)
     sell_price = Column(DECIMAL(15, 2), nullable=False)
-    location = Column(String(100))
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    __table_args__ = (
-        UniqueConstraint(
-            "timestamp", "unit_id", "location", "gold_type_id", name="unique_gold_daily_entry"
-        ),
-    )
+    gold_type = relationship("GoldType", back_populates="daily_prices")
+    unit = relationship("Unit", back_populates="daily_prices")
+
     def as_dict(self):
         return {
-            "id": self.id,
             "timestamp": self.timestamp.isoformat(),
             "buy_price": float(self.buy_price),
             "sell_price": float(self.sell_price),
@@ -102,7 +92,3 @@ class DailyGoldPrice(Base):
             "gold_type": self.gold_type.name if self.gold_type else None,
             "unit": self.unit.name if self.unit else None,
         }
-
-
-    gold_type = relationship("GoldType", back_populates="daily_prices")
-    unit = relationship("Unit", back_populates="daily_prices")

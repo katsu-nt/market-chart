@@ -4,7 +4,7 @@ from app.database import SessionLocal
 from app.db.utils import get_or_create
 from datetime import datetime
 import pytz
-
+from sqlalchemy import not_
 
 def normalize_gold_type(name: str) -> str:
     name = name.strip().lower()
@@ -25,10 +25,8 @@ def normalize_gold_type(name: str) -> str:
     }
     return mapping.get(name, name.replace(" ", "_").lower())
 
-
 def normalize_unit():
     return "tael", "1000VND/Lượng"
-
 
 async def import_pnj_daily():
     print("📡 Fetching PNJ live daily data...")
@@ -38,8 +36,14 @@ async def import_pnj_daily():
         if not data:
             return
 
-        deleted = db.query(DailyGoldPrice).delete()
-        print(f"🧹 Deleted {deleted} daily_gold_prices")
+        # 🕒 Lấy thời gian hiện tại, làm tròn đến phút (bỏ giây và microsecond)
+        now = datetime.now(pytz.timezone("Asia/Ho_Chi_Minh")).replace(second=0, microsecond=0)
+
+        # 🧹 Xoá các bản ghi daily_gold_prices không phải xau_vnd
+        deleted = db.query(DailyGoldPrice).filter(
+            not_(DailyGoldPrice.gold_type.has(GoldType.name == "xau_vnd"))
+        ).delete(synchronize_session=False)
+        print(f"🧹 Deleted {deleted} daily_gold_prices (excluding xau_vnd)")
 
         unit_name, unit_desc = normalize_unit()
         unit = get_or_create(db, Unit, {"name": unit_name}, {"description": unit_desc})
@@ -53,7 +57,7 @@ async def import_pnj_daily():
                 {"description": rec["gold_type"]},
             )
             db.add(DailyGoldPrice(
-                timestamp=rec["timestamp"],
+                timestamp=now,
                 buy_price=rec["buy_price"],
                 sell_price=rec["sell_price"],
                 location=rec["location"],
