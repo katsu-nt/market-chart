@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session, joinedload
 from datetime import datetime, date
 from app.database import get_db
-from app.models.exchange_rates import DailyExchangeRate, ExchangeRate
+from app.models.exchange_rates import  ExchangeRate
 
 router = APIRouter(prefix="/exchange-rates", tags=["Exchange Rates"])
 
@@ -19,16 +19,16 @@ def wrap_response(data: list, status_code: int = 200, message: str = "success"):
     )
 
 
-@router.get("/live")
-def get_current_exchange_rates(db: Session = Depends(get_db)):
-    results = db.query(DailyExchangeRate).options(
-        joinedload(DailyExchangeRate.rate_type)
-    ).all()
+# @router.get("/live")
+# def get_current_exchange_rates(db: Session = Depends(get_db)):
+#     results = db.query(DailyExchangeRate).options(
+#         joinedload(DailyExchangeRate.rate_type)
+#     ).all()
 
-    if not results:
-        return wrap_response([], status_code=404, message="Không có dữ liệu hôm nay")
+#     if not results:
+#         return wrap_response([], status_code=404, message="Không có dữ liệu hôm nay")
 
-    return wrap_response([r.as_dict() for r in results])
+#     return wrap_response([r.as_dict() for r in results])
 
 
 @router.get("/by-date")
