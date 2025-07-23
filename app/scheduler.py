@@ -5,8 +5,6 @@ import asyncio
 from app.services.import_pnj_daily import import_pnj_daily
 from app.services.import_xau_vnd_live import import_xau_vnd_live
 from app.services.transfer_to_gold_prices import transfer_daily_to_gold_prices
-from app.services.import_vcb_daily import import_vcb_daily
-from app.services.transfer_daily_to_exchange_rates import transfer_daily_to_exchange_rates
 
 scheduler = BackgroundScheduler(timezone=timezone("Asia/Ho_Chi_Minh"))
 
