@@ -24,20 +24,20 @@ def start():
         id="hourly_xau_vnd",
         replace_existing=True,
     )
-    scheduler.add_job(
-        lambda: asyncio.run(import_vcb_daily()),
-        CronTrigger(minute=37, second=45),  # chạy vào phút thứ 10 mỗi giờ
-        id="hourly_vcb",
-        replace_existing=True,
-    )
+    # scheduler.add_job(
+    #     lambda: asyncio.run(import_vcb_daily()),
+    #     CronTrigger(minute=37, second=45),  # chạy vào phút thứ 10 mỗi giờ
+    #     id="hourly_vcb",
+    #     replace_existing=True,
+    # )
 
     # 23h57: chuyển sang bảng chính
-    scheduler.add_job(
-        lambda: asyncio.run(transfer_daily_to_exchange_rates()),
-        CronTrigger(hour=23, minute=57),
-        id="daily_vcb_eod",
-        replace_existing=True,
-    )
+    # scheduler.add_job(
+    #     lambda: asyncio.run(transfer_daily_to_exchange_rates()),
+    #     CronTrigger(hour=23, minute=57),
+    #     id="daily_vcb_eod",
+    #     replace_existing=True,
+    # )
     scheduler.add_job(
         lambda: asyncio.run(transfer_daily_to_gold_prices()),
         CronTrigger(hour=23, minute=57),

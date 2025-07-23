@@ -7,6 +7,8 @@ from sqlalchemy import (
     ForeignKey,
     PrimaryKeyConstraint,
     Index,
+    Date,
+    DECIMAL
 )
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -84,3 +86,6 @@ class DailyExchangeRate(Base):
             "transfer_rate": float(self.transfer_rate) if self.transfer_rate else None,
             "sell_rate": float(self.sell_rate) if self.sell_rate else None,
         }
+
+
+
